@@ -38,6 +38,20 @@ manuscript and response letter should name the route actually provided.
 
 The code uses only the Python standard library.
 
+## Reproduce the reported computations
+
+Run these commands from this directory. They cover the numerical results
+requested in referee comment 6.
+
+| Manuscript result | Command | Where to check |
+|-------------------|---------|----------------|
+| Table 2, especially the last two rows | `python3 reproduce_search.py` and `python3 verify.py` | Fixed-parameter maxima in the printed output; code dimensions, distances, and decoders in the 46 checks. |
+| Table 3, all 14 rows | `python3 reproduce_search.py` | Printed assertions and `landscape_data.csv`. |
+| Figure 4, all 24 plotted points | `python3 reproduce_search.py` | `figure4_points.csv`, derived from the 80 degree-level rows in `landscape_data.csv`. |
+| Positive-rate search behind Table 2 | `python3 search2.py` | 4,382 hits in `positive_hits.csv` and `hits.pkl`. |
+
+The exact `(n,k1,k2)` values for the four Table 2 rows appear below.
+
 ## Files
 
 | File | Role |
