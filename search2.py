@@ -1,4 +1,5 @@
-import itertools, math, time
+import csv, itertools, json, math, time
+from pathlib import Path
 from functools import lru_cache
 from ffield import GFTable, rref, rank, dual_basis, in_rowspace
 from ore import (Ore, xn_minus_1, monic_divisors_right, skew_gen_matrix)
@@ -78,8 +79,15 @@ if __name__=="__main__":
             G1=skew_gen_matrix(O,r['g1'],r['n']); G2=skew_gen_matrix(O,r['g2'],r['n'])
             d1=min_distance_fast(F,G1); d2=min_distance_fast(F,G2)
             r['d1']=d1; r['d2']=d2
-            print(f"[{name}] n={r['n']} (k1,k2)=({r['k1']},{r['k2']}) ds={r['ds']} "
-                  f"ind={r['ind']} cyc={r['cyc']} gain={r['gain']:.3g} k_L={r['kL']} "
-                  f"d1={d1} d2={d2}")
     import pickle
-    pickle.dump(allhits,open('/home/claude/skewqsc/hits.pkl','wb'))
+    with Path(__file__).with_name('hits.pkl').open('wb') as stream:
+        pickle.dump(allhits, stream)
+    columns = ('field', 'n', 'k1', 'k2', 'ds', 'ind', 'cyc', 'gain',
+               'kL', 'd1', 'd2', 'g1', 'g2', 'fs')
+    with Path(__file__).with_name('positive_hits.csv').open('w', newline='') as stream:
+        writer = csv.DictWriter(stream, fieldnames=columns)
+        writer.writeheader()
+        for hit in allhits:
+            writer.writerow({key: json.dumps(hit[key]) if key in ('g1', 'g2', 'fs')
+                             else hit[key] for key in columns})
+    print(f"Wrote {len(allhits)} search hits to hits.pkl and positive_hits.csv")

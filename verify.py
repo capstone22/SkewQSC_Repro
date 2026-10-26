@@ -97,7 +97,7 @@ def part1():
 
 def part2():
     print("\n" + "="*70)
-    print("PART 2   ind_theta(f_s) | n  for every realizable quotient")
+    print("PART 2   ind_theta(f) | n  for enumerated right divisors")
     print("="*70)
     cases = [("F4", F4, 1, [4, 8, 10, 14, 16]),
              ("F8", F8, 1, [3, 6, 9, 12]),
@@ -110,7 +110,7 @@ def part2():
                     tot += 1
                     idx = O.skew_index(f)
                     if idx is None or n % idx != 0: ok = False
-        check(f"{name}: all {tot} realizable quotients satisfy ind | n", ok)
+        check(f"{name}: all {tot} enumerated right divisors satisfy ind | n", ok)
 
 def part3():
     print("\n" + "="*70)
@@ -149,7 +149,7 @@ def analyze_positive(name, F, tp, n, k1, k2, g1, g2, fs):
     gain = ind / cyc if cyc else 0
     G1 = skew_gen_matrix(O, g1, n); G2 = skew_gen_matrix(O, g2, n)
     dualc = euclid_dual_contains(F, G1)
-    kdim = len(rref(F, G1)[1]); kL = 2*k1 - n
+    kdim = len(rref(F, G1)[1]); k2dim = len(rref(F, G2)[1]); kL = 2*k1 - n
     d1 = min_distance_fast(F, G1); d2 = min_distance_fast(F, G2)
     Hb, Tb = syndrome_table(F, G2, (d2 - 1) // 2)
     Hp, Tp = syndrome_table(F, G1, (d1 - 1) // 2)
@@ -169,6 +169,8 @@ def analyze_positive(name, F, tp, n, k1, k2, g1, g2, fs):
           f"d1(phase)={d1}  d2(bit)={d2}")
     check(f"{name}: fs*g2=g1, nested, g1|x^n-1", fact and div and nest)
     check(f"{name}: dim C1 = k1 = {k1}", kdim == k1)
+    check(f"{name}: dim C2 = k2 = {k2}, deg fs = k2-k1",
+          k2dim == k2 and O.deg(fs) == k2-k1)
     check(f"{name}: C1^perp ⊆ C1 (valid CSS)", dualc)
     check(f"{name}: k_L = {kL} > 0  AND strict gain {gain:.3g} > 1", kL > 0 and gain > 1)
     check(f"{name}: corrects ≥1 bit and ≥1 phase (d1≥3 and d2≥3)", d1 >= 3 and d2 >= 3)
@@ -180,13 +182,13 @@ def part4():
     print("PART 4   Positive-logical-dimension, strict-gain, error-correcting")
     print("         skew-cyclic CSS codes  (resolves Open Problem 3)")
     print("="*70)
-    analyze_positive("FLAGSHIP A ", F4, 1, 16, 10, 13,
+    analyze_positive("FLAGSHIP A ", F4, 1, 16, 10, 11,
                      [1,1,2,3,2,2,1], [2,3,0,1,1,1], [3,1])
-    analyze_positive("FLAGSHIP A2", F4, 1, 16, 9, 14,
+    analyze_positive("FLAGSHIP A2", F4, 1, 16, 9, 11,
                      [2,0,3,1,2,0,3,1], [1,2,0,2,0,1], [2,3,1])
-    analyze_positive("FLAGSHIP B ", F8, 1, 9, 6, 8,
+    analyze_positive("FLAGSHIP B ", F8, 1, 9, 6, 7,
                      [2,1,5,1], [3,6,1], [7,1])
-    analyze_positive("FLAGSHIP B2", F8, 1, 12, 7, 11,
+    analyze_positive("FLAGSHIP B2", F8, 1, 12, 7, 8,
                      [2,1,3,6,7,1], [3,6,4,0,1], [7,1])
 
 if __name__ == "__main__":
