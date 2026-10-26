@@ -54,7 +54,7 @@ def decode(F, H, table, received):
     e = table.get(s)
     if e is None:
         return None
-    return add_vec(F, received, e)
+    return [F.sub(x, y) for x, y in zip(received, e)]
 
 
 def random_error(F, n, probability, rng):
